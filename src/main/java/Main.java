@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-
+        FastReader reader = new FastReader();
     }
 
     /* ---------- Fast Reader ---------- */
@@ -32,7 +32,7 @@ public class Main {
 
         public String readLine() throws IOException
         {
-            byte[] buf = new byte[64]; // line length
+            StringBuilder builder = new StringBuilder(64);
             int cnt = 0, c;
             while ((c = read()) != -1) {
                 if (c == '\n') {
@@ -43,9 +43,24 @@ public class Main {
                         continue;
                     }
                 }
-                buf[cnt++] = (byte)c;
+
+                cnt++;
+                builder.append((char) c);
             }
-            return new String(buf, 0, cnt);
+            return builder.toString();
+        }
+
+        public String next() throws IOException {
+            StringBuilder builder = new StringBuilder(64);
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            do {
+                builder.append((char) c);
+            } while ((c = read()) > ' ');
+
+            return builder.toString();
         }
 
         public int nextInt() throws IOException
