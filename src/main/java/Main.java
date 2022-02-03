@@ -134,6 +134,7 @@ public class Main {
 
         private byte read() throws IOException
         {
+            if (buffer[0] == -1) return -1;
             if (bufferPointer == bytesRead)
                 fillBuffer();
             return buffer[bufferPointer++];
