@@ -49,6 +49,15 @@ public class Main {
             return builder.toString();
         }
 
+        public boolean hasNext() throws IOException {
+            byte c = peek();
+            while (c != -1 && c <= ' ') {
+                read();
+                c = peek();
+            }
+            return c != -1;
+        }
+
         public String next() throws IOException {
             StringBuilder builder = new StringBuilder(64);
             byte c = read();
@@ -138,6 +147,14 @@ public class Main {
             if (bufferPointer == bytesRead)
                 fillBuffer();
             return buffer[bufferPointer++];
+        }
+
+        private byte peek() throws IOException
+        {
+            if (buffer[0] == -1) return -1;
+            if (bufferPointer == bytesRead)
+                fillBuffer();
+            return buffer[bufferPointer];
         }
 
         public void close() throws IOException
