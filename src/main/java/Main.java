@@ -1,6 +1,4 @@
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -47,15 +45,17 @@ public class Main {
                 cnt++;
                 builder.append((char) c);
             }
+            if (c == -1) return null;
             return builder.toString();
         }
 
         public String next() throws IOException {
             StringBuilder builder = new StringBuilder(64);
             byte c = read();
-            while (c <= ' ') {
+            while (c != -1 && c <= ' ') {
                 c = read();
             }
+            if (c == -1) return null;
             do {
                 builder.append((char) c);
             } while ((c = read()) > ' ');
