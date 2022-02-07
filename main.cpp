@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#define MY_DEBUG false
+#define MY_DEBUG true
 
 #define $(x) {if (MY_DEBUG) {cout << __LINE__ << ": "; cout << #x << " = " << x << " " << endl;}}
 
@@ -32,6 +32,7 @@ std::ostream& operator<< (std::ostream& out, const vector<T>& v) {
 
 // REMEMBER: modify MY_DEBUG to false
 // main region begin (DO NOT DELETE ABOVE)
+
 
 
 int main()
