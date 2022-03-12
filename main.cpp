@@ -17,7 +17,7 @@ string to_string(T value) {
     return os.str();
 }
 
-#endif
+#endif // __cplusplus
 
 template<class T>
 std::ostream& operator<< (std::ostream& out, const vector<T>& v) {
