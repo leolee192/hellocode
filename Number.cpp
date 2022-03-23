@@ -117,3 +117,43 @@ std::ostream& operator<< (std::ostream &out, const BigInteger &v) {
 
 
 /** END of BigInteger (10-based) */
+
+bool isPrime(long long x) {
+    if (x <= 1) return false;
+    if (x == 2) return true;
+    if (x % 2 == 0) return false;
+
+    long i = 3, u = (long)(sqrt(x) + 1);
+    while (i <= u) {
+        if (x % i == 0) {
+            return false;
+        }
+        i += 2;
+    }
+    return true;
+}
+
+
+/* Find the gcd(p,q) and x,y such that p*x + q*y = gcd(p,q) */
+long long gcd(long long p, long long q, long long *x, long long *y) {
+    long long x1, y1; // previous coefficients
+    long long g;
+
+    if (q > p) return (gcd(q, p, y, x));
+
+    if (q == 0) {
+        *x = 1;
+        *y = 0;
+        return p;
+    }
+
+    g = gcd(q, p % q, &x1, &y1);
+
+    *x = y1;
+    *y = (x1 - p / q * y1);
+
+    return g;
+}
+
+/* lcm(x, y) = x*y/gcd(x, y) */
+

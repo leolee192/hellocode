@@ -1,0 +1,5 @@
+https://en.wikipedia.org/wiki/64-bit_computing#64-bit_data_models
+8bits: char
+16bits: short
+32bits: int
+64bits: long long
