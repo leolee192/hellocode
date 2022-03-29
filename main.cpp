@@ -4,7 +4,7 @@ using namespace std;
 
 #define MY_DEBUG true
 
-#define $(x) {if (MY_DEBUG) {cout << __LINE__ << ": "; cout << #x << " = " << x << " " << endl;}}
+#define $(x) {if (MY_DEBUG) {cout << __LINE__ << ": "; cout << #x << " = " << (x) << " " << endl;}}
 
 #if __cplusplus <= 199711L
 
@@ -38,5 +38,5 @@ std::ostream& operator<< (std::ostream& out, const vector<T>& v) {
 int main()
 {
 
-    return 0;
+  return 0;
 }
