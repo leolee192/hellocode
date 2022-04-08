@@ -118,6 +118,7 @@ std::ostream& operator<< (std::ostream &out, const BigInteger &v) {
 
 /** END of BigInteger (10-based) */
 
+// one operation O(sqrt(x))
 bool isPrime(long long x) {
     if (x <= 1) return false;
     if (x == 2) return true;
@@ -133,6 +134,18 @@ bool isPrime(long long x) {
     return true;
 }
 
+// sieve of Eratosthenes O(nlog(log(n)))
+vector<bool> eratosthenes(int upperbound) {
+  std::vector<bool> flag(upperbound + 1, true);
+  flag[0] = flag[1] = false; //exclude 0 and 1
+  for (int i = 2; i * i <= upperbound; ++i) {
+    if (flag[i]) {
+      for (int j = i * i; j <= upperbound; j += i)
+        flag[j] = false;
+    }
+  }
+  return flag;
+}
 
 /* Find the gcd(p,q) and x,y such that p*x + q*y = gcd(p,q) */
 long long gcd(long long p, long long q, long long *x, long long *y) {
