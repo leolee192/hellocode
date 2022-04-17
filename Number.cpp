@@ -134,6 +134,28 @@ bool isPrime(long long x) {
     return true;
 }
 
+// Euler's totient function
+// https://www.geeksforgeeks.org/eulers-totient-function/
+long long phi(long long n)
+{
+  long long result = n;
+
+  for(long long p = 2; p * p <= n; ++p)
+  {
+    if (n % p == 0)
+    {
+      while (n % p == 0) {
+        n /= p;
+      }
+      result -= result / p;
+    }
+  }
+
+  if (n > 1) result -= result / n;
+
+  return result;
+}
+
 // sieve of Eratosthenes O(nlog(log(n)))
 vector<bool> eratosthenes(int upperbound) {
   std::vector<bool> flag(upperbound + 1, true);
