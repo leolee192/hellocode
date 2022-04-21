@@ -1,3 +1,6 @@
+
+const long double PI = 3.141592653589793238462643383279502884L;
+
 /** print with leading zeros */
 cout << setw(2) << setfill('0') << (start / 60);
 
