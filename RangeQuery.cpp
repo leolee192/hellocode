@@ -1,24 +1,43 @@
 /** segment tree (point update) */
 template<class T>
 struct SegmentTree {
-  T (*Op)(T, T);
-  T Identity;
+  T (*AggOp) (T, T);
+  T AggIdentity;
 
   int n;
   T *data;
 
   // index [0, n_)
-  SegmentTree(int n_, T (*op_)(T, T), T identity_) {
-    Op = op_;
-    Identity = identity_;
-
+  SegmentTree(int n_, T (*aggOp) (T, T), T aggIdentity)
+      : AggOp(aggOp), AggIdentity(aggIdentity) {
     // enlarge to power of 2 for simplicity
     n = 1;
     while (n < n_) n *= 2;
 
     data = new T[2*n - 1];
     for (int i=0; i< 2*n - 1; ++i) {
-      data[i] = Identity;
+      data[i] = AggIdentity;
+    }
+  }
+
+  SegmentTree(vector<T> &nums, T (*aggOp) (T, T), T aggIdentity)
+      : AggOp(aggOp), AggIdentity(aggIdentity) {
+    // enlarge to power of 2 for simplicity
+    n = 1;
+    while (n < nums.size()) n *= 2;
+
+    data = new T[2*n - 1];
+    _init(0, 0, n, nums);
+  }
+
+  void _init(int k, int l, int r, vector<T> &nums) {
+    if (r - l == 1) {
+      data[k] = (l < nums.size()) ? nums[l] : AggIdentity;
+    } else {
+      int lch = 2*k + 1, rch = 2*k + 2;
+      _init(lch, l, (l + r) / 2, nums);
+      _init(rch, (l + r) / 2, r, nums);
+      data[k] = AggOp(data[lch], data[rch]);
     }
   }
 
@@ -27,26 +46,26 @@ struct SegmentTree {
     data[k] = a;
     while (k > 0) {
       k = (k - 1) / 2; // upwards
-      data[k] = Op(data[2*k + 1], data[2*k + 2]);
+      data[k] = AggOp(data[2*k + 1], data[2*k + 2]);
     }
   }
 
   // RMQ from [a, b)
-  T query(int a, int b) {
+  inline T query(int a, int b) {
     return _query(a, b, 0, 0, n);
   }
 
   // sub-query in interval [l, r)
   T _query(int a, int b, int k, int l, int r) {
     if (r <= a || b <= l) { // [a,b) not interleave with [l,r)
-      return Identity;
+      return AggIdentity;
     }
     if (a <= l && r <= b) { // [a, b) cover [l, r)
       return data[k];
     } else {
       T vl = _query(a, b, 2*k + 1, l, (l+r) / 2);
       T vr = _query(a, b, 2*k + 2, (l+r) / 2, r);
-      return Op(vl, vr);
+      return AggOp(vl, vr);
     }
   }
 };
@@ -67,8 +86,8 @@ struct SegmentTreeIntervalUpdate {
 
   // index [0, n_)
   SegmentTreeIntervalUpdate(int n_,
-              T (*aggOp_)(T, T), T aggIdentity_,
-              T (*updateOp_)(T, T), T updateIdentity_, T (*multiUpdateOp_)(T, T, int)) {
+                            T (*aggOp_)(T, T), T aggIdentity_,
+                            T (*updateOp_)(T, T), T updateIdentity_, T (*multiUpdateOp_)(T, T, int)) {
     AggOp = aggOp_;
     AggIdentity = aggIdentity_;
     UpdateOp = updateOp_;
@@ -90,6 +109,39 @@ struct SegmentTreeIntervalUpdate {
     }
   }
 
+  SegmentTreeIntervalUpdate(vector<T> &nums,
+                            T (*aggOp_)(T, T), T aggIdentity_,
+                            T (*updateOp_)(T, T), T updateIdentity_, T (*multiUpdateOp_)(T, T, int)) {
+    AggOp = aggOp_;
+    AggIdentity = aggIdentity_;
+    UpdateOp = updateOp_;
+    UpdateIdentity = updateIdentity_;
+    MultiUpdateOp = multiUpdateOp_;
+
+    // enlarge to power of 2 for simplicity
+    n = 1;
+    while (n < nums.size()) n *= 2;
+
+    data = new T[2*n - 1];
+    _init(0, 0, n, nums);
+
+    delta = new T[2*n - 1];
+    for (int i=0; i< 2*n - 1; ++i) {
+      delta[i] = UpdateIdentity;
+    }
+  }
+
+  void _init(int k, int l, int r, vector<T> &nums) {
+    if (r - l == 1) {
+      data[k] = (l < nums.size()) ? nums[l] : AggIdentity;
+    } else {
+      int lch = 2*k + 1, rch = 2*k + 2;
+      _init(lch, l, (l + r) / 2, nums);
+      _init(rch, (l + r) / 2, r, nums);
+      data[k] = AggOp(data[lch], data[rch]);
+    }
+  }
+
   void _pushDown(int k, int nl, int nr) {
     if (delta[k] != UpdateIdentity) {
       delta[2*k + 1] = UpdateOp(delta[2*k + 1], delta[k]);
@@ -102,12 +154,12 @@ struct SegmentTreeIntervalUpdate {
     }
   };
 
-  void update(int k, T delta_) {
+  inline void update(int k, T delta_) {
     update(k, k+1, delta_);
   }
 
   // update [a,b) by delta_
-  void update(int a, int b, T delta_) {
+  inline void update(int a, int b, T delta_) {
     _update(a, b, delta_, 0, 0, n);
   }
 
@@ -130,7 +182,7 @@ struct SegmentTreeIntervalUpdate {
   }
 
   // RMQ from [a, b)
-  T query(int a, int b) {
+  inline T query(int a, int b) {
     return _query(a, b, 0, 0, n);
   }
 
