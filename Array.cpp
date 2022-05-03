@@ -37,23 +37,14 @@ struct myclass {
 
 myclass myobj = {solved, penalty, last};
 sort(board.begin(), board.end(), myobj);
+// for array
+sort(intervals, intervals+N, myobj);
 
-/** binary search */
-struct GreaterEqual {
-  vector<int> &nums;
-  int target;
-  GreaterEqual(vector<int> &nums, int target) : nums(nums), target(target) {}
-  inline bool operator ()(int i) {
-    return nums[i] >= target;
-  }
-};
-
-/**
+/** binary search
  * find in [left, right) first i satisfying ge(i)
  * recheck equality if needed !!
  */
-template <class Index, class GE>
-Index my_lower_bound(Index left, Index right, GE ge) {
+Index my_lower_bound(Index left, Index right) {
   while (left < right) {
     Index mid = left + (right - left) / 2;
     if (ge(mid)) right = mid;
